@@ -1,0 +1,9 @@
+[
+    {
+        "event": "memory_write",
+        "lesson_id": "lesson-persist",
+        "status": "active",
+        "source_run": "run-005",
+        "confidence": 0.75
+    }
+]

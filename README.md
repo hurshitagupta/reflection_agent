@@ -95,10 +95,6 @@ This provides traceable evidence showing how the lesson was created from the ori
 
 Timeout, retry, and step-limit controls are not required in this deterministic reflection function and are implemented later in the bounded repeat/execution stage where they are operationally relevant.
 
-### Task 1 Result
-
-Task 1 demonstrates the Reflect phase of the workflow by converting a structured failure into a deterministic and provenance-bearing lesson while rejecting invalid reflection cases.
-
 ---
 
 ## Task 2 — Implement Lesson Validation and Provenance
@@ -185,6 +181,202 @@ The following guardrails are implemented in this task:
 
 Timeout, retry, and step-limit controls are not applied to this deterministic validation function and are handled later in the execution loop where they are relevant.
 
-### Task 2 Result
+---
 
-Task 2 ensures that only complete, traceable, and structurally valid lessons pass validation before they can be considered for memory storage.
+## Task 3 — Implement the Memory-Write Policy
+
+### Objective
+
+This task controls whether a validated lesson is allowed to enter reflective memory.
+
+The memory-write policy checks confidence, prevents duplicate writes, applies review requirements, and records the final lesson status.
+
+### Files
+
+- `memory.py` — Implements the reflective-memory store and write policy.
+- `tests/test_memory.py` — Contains automated tests for memory-write behavior.
+- `outputs/memory_events.json` — Stores structured memory-write events.
+- `outputs/memory_quality.json` — Stores memory-quality counts.
+- `outputs/memory.txt` — Stores the main Task 3 execution output.
+- `outputs/test_memory.txt` — Stores the pytest results.
+
+### Implementation
+
+The `ReflectiveMemory` class maintains:
+
+- stored lessons
+- memory-write events
+- memory-quality metrics
+- confidence thresholds
+
+The default policy uses:
+
+```text
+confidence_floor = 0.70
+durable_review_floor = 0.85
+```
+
+### Validation Before Write
+
+Before storing a lesson, `write()` reuses the `validate()` function from Task 2.
+
+An invalid lesson returns:
+
+```text
+rejected_invalid
+```
+
+This prevents incomplete or invalid lessons from entering memory.
+
+### Confidence Policy
+
+A structurally valid lesson must also meet the minimum confidence threshold.
+
+If:
+
+```text
+confidence < 0.70
+```
+
+the lesson is rejected with:
+
+```text
+rejected_low_confidence
+```
+
+This separates structural validation from the decision to store the lesson.
+
+### Duplicate Detection
+
+Before writing a lesson, the memory checks whether its deterministic `lesson_id` is already stored.
+
+If the lesson already exists, the write returns:
+
+```text
+duplicate_ignored
+```
+
+The existing lesson is not silently overwritten.
+
+### Review and Activation
+
+Lessons below the durable review threshold but above the confidence floor become:
+
+```text
+active
+```
+
+A high-confidence lesson where:
+
+```text
+confidence >= 0.85
+```
+
+is placed into:
+
+```text
+pending_review
+```
+
+unless approval is explicitly provided.
+
+If the same type of high-confidence lesson is written with:
+
+```python
+approved=True
+```
+
+its stored status becomes:
+
+```text
+active
+```
+
+This prevents important lessons from automatically changing future behavior without passing the required policy boundary.
+
+### Status Persistence
+
+When a lesson is accepted, a stored copy is created with its final status.
+
+The lesson keeps its original:
+
+- lesson ID
+- condition
+- refinement
+- evidence
+- source run
+- confidence
+
+while its status changes from `candidate` to either `active` or `pending_review`.
+
+### Memory Events
+
+Each write decision is recorded in:
+
+```text
+outputs/memory_events.json
+```
+
+The events record information such as:
+
+- lesson ID
+- write result
+- source run
+- confidence
+- final status
+
+This makes memory decisions traceable.
+
+### Memory Quality Metrics
+
+The implementation tracks:
+
+```text
+active_lessons
+pending_review
+rejected_writes
+duplicate_writes
+```
+
+These counts are stored in:
+
+```text
+outputs/memory_quality.json
+```
+
+### Run the Implementation
+
+```bash
+python memory.py
+```
+
+### Run Automated Tests
+
+```bash
+pytest tests/test_memory.py -v
+```
+
+### Automated Tests
+
+The tests verify:
+
+- low-confidence lessons are rejected
+- duplicate lessons are ignored
+- high-confidence lessons require review
+- approved high-confidence lessons become active
+- stored lesson status and provenance remain available after the write
+
+### Guardrails
+
+The following guardrails are implemented in this task:
+
+- **Validation:** Lessons are validated before memory writes.
+- **Confidence threshold:** Low-confidence lessons are rejected.
+- **Deduplication:** Existing lessons are not silently overwritten.
+- **Review boundary:** High-confidence durable lessons require approval before activation.
+- **Provenance:** Stored lessons retain their source run and supporting evidence.
+- **Feedback-loop prevention:** A lesson cannot become active solely because it was generated; validation and memory policy are applied before activation.
+- **Secret hygiene:** No credentials or secrets are stored in memory events.
+
+Timeout, retry, and step limits are not required for this local memory-write function and are handled in the bounded execution loop.
+

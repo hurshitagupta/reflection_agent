@@ -1,7 +1,7 @@
 {
     "event": "lesson_validated",
-    "lesson_id": "lesson-005",
-    "source_run": "",
+    "lesson_id": "lesson-persist",
+    "source_run": "run-005",
     "evidence": [
         "v",
         "a",
@@ -35,6 +35,6 @@
         "d"
     ],
     "confidence": 0.75,
-    "valid": false,
-    "reason": "Missing source run"
+    "valid": true,
+    "reason": "Lesson is valid"
 }

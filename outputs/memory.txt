@@ -1,0 +1,14 @@
+Normal lesson:
+active
+
+High-confidence lesson:
+pending_review
+
+Approved high-confidence lesson:
+active
+
+Stored lessons:
+{'lesson-001': Lesson(lesson_id='lesson-001', condition='missing customer id', refinement='Validate customer id before retry', evidence=('validator:customer_id_required',), source_run='run-001', confidence=0.75, status='active'), 'lesson-002': Lesson(lesson_id='lesson-002', condition='authorization missing', refinement='Check authorization before action', evidence=('policy:authorization_failed',), source_run='run-002', confidence=0.9, status='pending_review')}
+
+Metrics:
+{'active_lessons': 1, 'pending_review': 1, 'rejected_writes': 0, 'duplicate_writes': 0}
