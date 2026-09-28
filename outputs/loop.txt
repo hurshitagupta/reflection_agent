@@ -1,0 +1,6 @@
+Run history:
+RunOutcome(run_id='run-1', task='Process customer support request', status='failure', output='', cause='missing customer id', evidence='validator:customer_id_required')
+RunOutcome(run_id='run-2', task='Process customer support request\nRefinements:\n- Before repeating, validate and address: missing customer id', status='success', output='Request processed successfully', cause='', evidence='validator:passed')
+
+Stored lessons:
+Lesson(lesson_id='af392162e2d5', condition='missing customer id', refinement='Before repeating, validate and address: missing customer id', evidence='validator:customer_id_required', source_run='run-1', confidence=0.75, status='active')

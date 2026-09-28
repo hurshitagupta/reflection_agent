@@ -1,19 +1,19 @@
 {
     "event": "reflection_created",
-    "run_id": "run-005",
-    "cause": "Missing customer ID",
+    "run_id": "run-2",
+    "cause": "processing failed",
     "evidence": [
-        "validator:second"
+        "executor:failure"
     ],
     "confidence": 0.75,
     "lesson": {
-        "lesson_id": "af392162e2d5",
-        "condition": "missing customer id",
-        "refinement": "Before repeating, validate and address: missing customer id",
+        "lesson_id": "f5e5489b9c7a",
+        "condition": "processing failed",
+        "refinement": "Before repeating, validate and address: processing failed",
         "evidence": [
-            "validator:second"
+            "executor:failure"
         ],
-        "source_run": "run-005",
+        "source_run": "run-2",
         "confidence": 0.75,
         "status": "candidate"
     }

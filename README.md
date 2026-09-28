@@ -380,3 +380,177 @@ The following guardrails are implemented in this task:
 
 Timeout, retry, and step limits are not required for this local memory-write function and are handled in the bounded execution loop.
 
+---
+
+## Task 4 — Implement Refine and Repeat
+
+### Objective
+
+This task implements the Refine and Repeat phases of the reflective-memory workflow.
+
+A failed execution can produce a validated lesson, an active lesson can influence the next plan, and execution is repeated under a hard attempt limit.
+
+### Files
+
+- `loop.py` — Implements `refine()`, `repeat()`, the deterministic demo executor, and loop tracing.
+- `tests/test_loop.py` — Contains automated tests for bounded execution and refinement behavior.
+- `outputs/loop_trace.json` — Stores attempt-level execution evidence.
+- `outputs/loop.txt` — Stores the main Task 4 execution output.
+- `outputs/test_loop.txt` — Stores the pytest results.
+
+### Refine Implementation
+
+The `refine()` function checks reflective memory for lessons whose status is:
+
+```text
+active
+```
+
+Only active lessons can modify the next execution plan.
+
+Lessons that are still:
+
+```text
+candidate
+```
+
+or:
+
+```text
+pending_review
+```
+
+do not influence future execution.
+
+When no active lessons exist, the original task is returned unchanged.
+
+When active lessons exist, their refinements are appended to the original task.
+
+Example:
+
+```text
+Process customer support request
+
+Refinements:
+- Before repeating, validate and address: missing customer id
+```
+
+The original task is preserved while the lesson adds guidance for the next attempt.
+
+### Repeat Implementation
+
+The `repeat()` function executes the task using a deterministic executor.
+
+Execution is controlled by:
+
+```text
+max_attempts
+```
+
+The loop can never execute more than the configured limit.
+
+For every attempt, the implementation:
+
+1. Preserves the original task.
+2. Applies active lessons using `refine()`.
+3. Executes the planned task.
+4. Stores the `RunOutcome` in history.
+5. Stops immediately if the run succeeds.
+6. Reflects on a failed run.
+7. Passes the generated lesson through the memory-write policy.
+8. Repeats only while the attempt budget remains.
+
+### First Failure and Second Success
+
+The demonstration executor intentionally fails on the first attempt because of:
+
+```text
+missing customer id
+```
+
+The failure contains execution evidence:
+
+```text
+validator:customer_id_required
+```
+
+The reflection stage creates a lesson from this failure.
+
+Because its confidence passes the memory-write policy, the lesson becomes active.
+
+On the second attempt, the active lesson is applied to the original task before execution.
+
+The second execution succeeds and the loop stops.
+
+### Attempt Limit
+
+The repeat loop uses:
+
+```python
+for attempt in range(1, max_attempts + 1):
+```
+
+This creates a hard upper boundary on the number of executions.
+
+If all attempts fail, the loop stops after the configured maximum and records the terminal result as failure.
+
+### Stop on Success
+
+When an execution returns:
+
+```text
+status="success"
+```
+
+the loop immediately stops.
+
+This prevents unnecessary additional execution after the task has already completed successfully.
+
+### Execution History
+
+Every `RunOutcome` is stored in order.
+
+This preserves the complete execution history rather than keeping only the final result.
+
+### Loop Trace
+
+Task 4 creates:
+
+```text
+outputs/loop_trace.json
+```
+
+### Run the Implementation
+
+```bash
+python loop.py
+```
+
+### Run Automated Tests
+
+```bash
+pytest tests/test_loop.py -v
+```
+
+### Automated Tests
+
+The tests verify:
+
+- the first attempt can fail and the second can succeed after reflection
+- repeated failures stop at `max_attempts`
+- non-active lessons do not modify the task
+- execution cannot enter an infinite loop
+
+### Guardrails
+
+The following guardrails are implemented in this task:
+
+- **Step limit:** `max_attempts` creates a hard execution boundary.
+- **Validation:** Reflected lessons pass through the existing validation and memory-write policy.
+- **Provenance:** Lessons continue to preserve their source run and execution evidence.
+- **Feedback-loop prevention:** Only active lessons can influence future plans.
+- **Stop on success:** Successful execution immediately ends the repeat cycle.
+- **Secret hygiene:** No credentials or sensitive configuration values are stored in loop traces.
+
+The executor used in this task is deterministic and local, so an artificial timeout or transient retry mechanism is not added. Bounded repetition is handled by the explicit attempt limit.
+

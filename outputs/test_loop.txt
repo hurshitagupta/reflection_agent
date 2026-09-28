@@ -1,0 +1,13 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Hurshita Gupta\OneDrive\Desktop\reflective_agent\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Hurshita Gupta\OneDrive\Desktop\reflective_agent
+configfile: pyproject.toml
+collecting ... collected 4 items
+
+tests/test_loop.py::test_first_failure_second_success PASSED             [ 25%]
+tests/test_loop.py::test_repeated_failure_until_limit PASSED             [ 50%]
+tests/test_loop.py::test_no_active_lesson_keeps_original_task PASSED     [ 75%]
+tests/test_loop.py::test_no_infinite_loop PASSED                         [100%]
+
+============================== 4 passed in 0.13s ==============================

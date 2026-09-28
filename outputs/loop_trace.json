@@ -1,0 +1,33 @@
+{
+    "task": "Process support request",
+    "max_attempts": 2,
+    "attempts_used": 2,
+    "terminal_status": "failure",
+    "total_duration_seconds": 0.012608,
+    "attempts": [
+        {
+            "attempt": 1,
+            "before_plan": "Process support request",
+            "after_plan": "Process support request",
+            "run_id": "run-1",
+            "status": "failure",
+            "cause": "processing failed",
+            "evidence": [
+                "executor:failure"
+            ],
+            "duration_seconds": 1.1e-05
+        },
+        {
+            "attempt": 2,
+            "before_plan": "Process support request",
+            "after_plan": "Process support request\nRefinements:\n- Before repeating, validate and address: processing failed",
+            "run_id": "run-2",
+            "status": "failure",
+            "cause": "processing failed",
+            "evidence": [
+                "executor:failure"
+            ],
+            "duration_seconds": 2.1e-05
+        }
+    ]
+}

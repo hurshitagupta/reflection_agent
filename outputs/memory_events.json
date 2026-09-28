@@ -1,9 +1,14 @@
 [
     {
         "event": "memory_write",
-        "lesson_id": "lesson-persist",
+        "lesson_id": "f5e5489b9c7a",
         "status": "active",
-        "source_run": "run-005",
+        "source_run": "run-1",
         "confidence": 0.75
+    },
+    {
+        "event": "memory_write",
+        "lesson_id": "f5e5489b9c7a",
+        "status": "duplicate_ignored"
     }
 ]
