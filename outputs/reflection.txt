@@ -1,0 +1,5 @@
+Run outcome:
+RunOutcome(run_id='run-001', task='Process customer support request', status='failure', output='', cause='Missing customer ID', evidence=('validator:customer_id_required',))
+
+Reflected lesson:
+Lesson(lesson_id='af392162e2d5', condition='missing customer id', refinement='Before repeating, validate and address: missing customer id', evidence=('validator:customer_id_required',), source_run='run-001', confidence=0.75, status='candidate')
