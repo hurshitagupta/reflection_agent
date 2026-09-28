@@ -1,0 +1,46 @@
+{
+    "runs": [
+        {
+            "run_id": "run-1",
+            "task": "Process customer support request",
+            "status": "failure",
+            "output": "",
+            "cause": "missing customer id",
+            "evidence": [
+                "validator:customer_id_required"
+            ]
+        },
+        {
+            "run_id": "run-2",
+            "task": "Process customer support request\nRefinements:\n- Before repeating, validate and address: missing customer id",
+            "status": "success",
+            "output": "Customer request processed",
+            "cause": "",
+            "evidence": [
+                "validator:passed"
+            ]
+        }
+    ],
+    "lessons": [
+        {
+            "lesson_id": "af392162e2d5",
+            "condition": "missing customer id",
+            "refinement": "Before repeating, validate and address: missing customer id",
+            "evidence": [
+                "validator:customer_id_required"
+            ],
+            "source_run": "run-1",
+            "confidence": 0.75,
+            "status": "active"
+        }
+    ],
+    "metrics": {
+        "attempts": 2,
+        "reflected_lessons": 1,
+        "active_lessons": 1,
+        "pending_review": 0,
+        "rejected_writes": 0,
+        "duplicate_writes": 0,
+        "success_rate": 0.5
+    }
+}

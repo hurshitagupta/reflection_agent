@@ -554,3 +554,139 @@ The following guardrails are implemented in this task:
 
 The executor used in this task is deterministic and local, so an artificial timeout or transient retry mechanism is not added. Bounded repetition is handled by the explicit attempt limit.
 
+---
+
+## Task 5 — Integrate, Measure, and Explain
+
+### Objective
+
+This task integrates the complete Reflect, Refine, Repeat workflow and demonstrates that the individual components from Tasks 1–4 work together.
+
+The final integration also records execution evidence, calculates metrics, and verifies the feedback-loop boundary.
+
+### Files
+
+- `main.py` — Integrates the complete reflective-memory workflow.
+- `tests/test_boundary.py` — Verifies that a generated lesson cannot confirm itself.
+- `outputs/final_evidence.json` — Stores final run history, lessons, and metrics.
+- `outputs/metrics.json` — Stores overall assessment metrics.
+- `outputs/main.txt` — Stores the integrated execution output.
+- `outputs/test_boundary.txt` — Stores the boundary-test result.
+- `outputs/test_all.txt` — Stores the complete pytest output.
+
+### Integrated Workflow
+
+The final workflow connects the modules developed in the previous tasks:
+
+```text
+Execution
+   ↓
+RunOutcome
+   ↓
+Reflect
+   ↓
+Validate
+   ↓
+Memory Write
+   ↓
+Refine
+   ↓
+Repeat
+```
+
+The first execution intentionally fails because of a missing customer ID.
+
+The failure contains independent execution evidence:
+
+```text
+validator:customer_id_required
+```
+
+The reflection stage converts the failed run into a lesson.
+
+The lesson is validated and passed through the memory-write policy.
+
+Because the lesson meets the required confidence threshold, it becomes active.
+
+The active lesson modifies the next plan before the task is executed again.
+
+The second execution succeeds and the bounded loop stops.
+
+### Metrics
+
+The metrics are saved in:
+
+```text
+outputs/metrics.json
+```
+
+### Final Evidence
+
+The complete integrated evidence is saved in:
+
+```text
+outputs/final_evidence.json
+```
+
+The file contains:
+
+- ordered run outcomes
+- stored lessons
+- lesson status
+- provenance
+- supporting evidence
+- final metrics
+
+This provides a reviewable record of the complete reflective-memory workflow.
+
+### Feedback-Loop Boundary
+
+A reflected lesson must never be treated as independent proof of its own correctness.
+
+The boundary test creates a lesson without independent evidence.
+
+Because the lesson has no evidence from an execution, validator, tool, or human review, validation rejects it.
+
+The memory-write policy therefore returns:
+
+```text
+rejected_invalid
+```
+
+and the lesson is not stored. This ensures that generated feedback cannot confirm itself and automatically influence future execution.
+
+### Run the Complete Implementation
+
+```bash
+python main.py
+```
+
+### Run the Boundary Test
+
+```bash
+pytest tests/test_boundary.py -v
+```
+
+### Run All Automated Tests
+
+```bash
+pytest -v
+```
+
+### Guardrails
+
+The complete implementation includes the following applicable guardrails:
+
+- **Step limit:** `max_attempts` prevents unbounded execution loops.
+- **Validation:** Lessons are validated before memory writes.
+- **Confidence threshold:** Low-confidence lessons are rejected.
+- **Deduplication:** Existing lesson IDs are not silently overwritten.
+- **Review boundary:** High-confidence durable lessons can require approval before activation.
+- **Provenance:** Every valid lesson references its source run and supporting evidence.
+- **Feedback-loop prevention:** A generated lesson cannot serve as its own independent confirmation.
+- **Secret hygiene:** No credentials or secrets are stored in memory or trace files.
+
+The implementation uses a local deterministic executor, so artificial timeout and transient retry logic are not added. The repeat stage is already bounded by the configured attempt limit.
+
+
+

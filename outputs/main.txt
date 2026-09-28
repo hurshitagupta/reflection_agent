@@ -1,0 +1,9 @@
+=== Reflect, Refine, Repeat ===
+Attempt 1: failure
+Attempt 2: success
+
+Stored lessons:
+af392162e2d5 active missing customer id
+
+Metrics:
+{'attempts': 2, 'reflected_lessons': 1, 'active_lessons': 1, 'pending_review': 0, 'rejected_writes': 0, 'duplicate_writes': 0, 'success_rate': 0.5}

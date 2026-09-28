@@ -1,0 +1,10 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Hurshita Gupta\OneDrive\Desktop\reflective_agent\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Hurshita Gupta\OneDrive\Desktop\reflective_agent
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+tests/test_boundary.py::test_lesson_cannot_confirm_itself PASSED         [100%]
+
+============================== 1 passed in 0.06s ==============================

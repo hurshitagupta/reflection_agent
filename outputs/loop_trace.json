@@ -1,33 +1,33 @@
 {
-    "task": "Process support request",
-    "max_attempts": 2,
+    "task": "Process customer support request",
+    "max_attempts": 3,
     "attempts_used": 2,
-    "terminal_status": "failure",
-    "total_duration_seconds": 0.012608,
+    "terminal_status": "success",
+    "total_duration_seconds": 0.00688,
     "attempts": [
         {
             "attempt": 1,
-            "before_plan": "Process support request",
-            "after_plan": "Process support request",
+            "before_plan": "Process customer support request",
+            "after_plan": "Process customer support request",
             "run_id": "run-1",
             "status": "failure",
-            "cause": "processing failed",
+            "cause": "missing customer id",
             "evidence": [
-                "executor:failure"
+                "validator:customer_id_required"
             ],
-            "duration_seconds": 1.1e-05
+            "duration_seconds": 1.2e-05
         },
         {
             "attempt": 2,
-            "before_plan": "Process support request",
-            "after_plan": "Process support request\nRefinements:\n- Before repeating, validate and address: processing failed",
+            "before_plan": "Process customer support request",
+            "after_plan": "Process customer support request\nRefinements:\n- Before repeating, validate and address: missing customer id",
             "run_id": "run-2",
-            "status": "failure",
-            "cause": "processing failed",
+            "status": "success",
+            "cause": "",
             "evidence": [
-                "executor:failure"
+                "validator:passed"
             ],
-            "duration_seconds": 2.1e-05
+            "duration_seconds": 2e-05
         }
     ]
 }

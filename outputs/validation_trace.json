@@ -1,9 +1,9 @@
 {
     "event": "lesson_validated",
-    "lesson_id": "f5e5489b9c7a",
-    "source_run": "run-2",
+    "lesson_id": "af392162e2d5",
+    "source_run": "run-1",
     "evidence": [
-        "executor:failure"
+        "validator:customer_id_required"
     ],
     "confidence": 0.75,
     "valid": true,
