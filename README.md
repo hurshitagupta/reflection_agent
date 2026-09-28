@@ -98,3 +98,93 @@ Timeout, retry, and step-limit controls are not required in this deterministic r
 ### Task 1 Result
 
 Task 1 demonstrates the Reflect phase of the workflow by converting a structured failure into a deterministic and provenance-bearing lesson while rejecting invalid reflection cases.
+
+---
+
+## Task 2 — Implement Lesson Validation and Provenance
+
+### Objective
+
+This task validates reflected lessons before they are allowed to move further into the reflective-memory workflow.
+
+The validation checks that each lesson contains the required information and remains traceable to the run and evidence that produced it.
+
+### Files
+
+- `validation.py` — Implements lesson validation and saves validation traces.
+- `tests/test_validation.py` — Contains automated tests for validation and provenance checks.
+- `outputs/validation_trace.json` — Stores the latest validation decision and reason.
+- `outputs/validation.txt` — Stores the main execution output.
+- `outputs/test_validation.txt` — Stores the pytest results.
+
+### Implementation
+
+The `validate()` function checks the following fields:
+
+- condition
+- refinement
+- source run
+- evidence
+- confidence
+
+A lesson is rejected when any required field is missing.
+
+Confidence must remain within the valid range:
+
+```text
+0.0 <= confidence <= 1.0
+```
+
+This task only validates the confidence value itself. The minimum confidence required to store a lesson is handled later by the memory-write policy.
+
+### Provenance
+
+Each lesson must contain a `source_run` and supporting `evidence`.
+
+This allows the lesson to be traced back to the execution that produced it.
+
+A generated lesson is not treated as independent proof of itself. The lesson is derived feedback, while the evidence must come from the original execution, validator, tool, or another independent source.
+
+### Validation Trace
+
+Every validation decision creates:
+
+```text
+outputs/validation_trace.json
+```
+
+
+### Run the Implementation
+
+```bash
+python validation.py
+```
+
+### Run Automated Tests
+
+```bash
+pytest tests/test_validation.py -v
+```
+
+The tests verify:
+
+- a complete valid lesson is accepted
+- an incomplete lesson is rejected
+- confidence outside the 0–1 range is rejected
+- a lesson without evidence is rejected
+- a lesson without a source run is rejected
+
+### Guardrails
+
+The following guardrails are implemented in this task:
+
+- **Validation:** Required lesson fields and confidence range are checked before further use.
+- **Provenance:** Every valid lesson must reference a source run and supporting evidence.
+- **Feedback-loop prevention:** Generated lesson content is kept separate from independent execution evidence.
+- **Secret hygiene:** No credentials or sensitive values are stored in validation traces.
+
+Timeout, retry, and step-limit controls are not applied to this deterministic validation function and are handled later in the execution loop where they are relevant.
+
+### Task 2 Result
+
+Task 2 ensures that only complete, traceable, and structurally valid lessons pass validation before they can be considered for memory storage.
